@@ -1,9 +1,8 @@
+from typing import Match
 import generador_VA_exp as gVAe
 import generador_VA_normal as gVAn
 import numpy as np
 import sys
-
-temp_dict = {1:0, 2:1}
 
 class Simulacion:    
     def __init__(self):
@@ -25,6 +24,8 @@ class Simulacion:
         # 4 -> se dirige al puerto sin tanquero 
         # 5 -> se dirige al muelle sin tanquero
         self.cola_puerto = 0
+
+        
         
         
         
@@ -56,7 +57,8 @@ class Simulacion:
         while(self.t<self.T or self.cant_arribos > self.cant_sal_car):
             t_min = min(self.t_arribo, self.t_remolcador, min(self.t_muelles))
             self.switch_t(t_min)
-        print("termine")
+            if(t_min == sys.maxsize):
+                break
         print("Entraron {} cargueros".format(self.cant_arribos))
         print("Salieron {} cargueros".format(self.cant_sal_car))
 
@@ -100,7 +102,7 @@ class Simulacion:
                 self.remolcador = 3
                 remolcador = False
         if self.cola_puerto and self.muelles.__contains__(True):
-            self.t_remolcador = gVAe.gen_VA_exp(15)
+            self.t_remolcador = self.t + gVAe.gen_VA_exp(15)
             self.remolcador = 4
         else:
             self.t_remolcador = sys.maxsize
@@ -142,7 +144,7 @@ class Simulacion:
     def suc_tras_m_p_rem(self): #_lambda = 15
         self.t = self.t_remolcador
         self.cola_puerto -= 1
-        self.t_remolcador = gVAe.gen_VA_exp(2*60)
+        self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60)
         self.remolcador = 2
         print("El remolcador fue del muelle al puerto vacio")
 
@@ -155,6 +157,7 @@ class Simulacion:
                 self.muelles[i]= True
                 self.t_remolcador = self.t + gVAe.gen_VA_exp(60)
                 self.remolcador = 3
+                print("El remolcador fue del puerto al muelle vacio")
                 return
         self.t_remolcador = sys.maxsize
         self.remolcador = 1
