@@ -13,7 +13,7 @@ def grapher(rep = 500, T = 115200, cant_bars = 5):
     values = [Simulacion(T).simulacion_evento() for value in range(rep)]
     v_max = max(values)
     v_min = min(values)
-    a = ((v_max - v_min) / cant_bsars).__floor__() 
+    a = ((v_max - v_min) / cant_bars).__floor__() 
     for i in range(cant_bars):
         temp_min = v_min + (a*i)
         temp_max = v_min + (a*(i+1)) if i < (cant_bars - 1) else v_max
