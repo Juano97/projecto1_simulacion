@@ -91,4 +91,5 @@ Al finalizar la simulación se imprime la cantidad de barcos cargueros que entra
 
 Luego de realizar la simulación de este ejercicio se puede comprobar que la cantidad de barcos que entran, salen, así como el tiempo que demoran cada uno de los procesos, dependen en gran medida de las variables aleatorias. Esto hace que sea muy difícil que se repitan simulaciones, probabilidad que sólo disminuye mientras aumente el tiempo total de la simulación (`self.T`). 
 
-!(https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Distribuci%C3%B3n.png?raw=true)
+![](https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Distribucion4.png?raw=true)
+
