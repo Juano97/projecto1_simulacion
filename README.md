@@ -12,7 +12,7 @@ Puerto Sobrecargado (Overloaded Harbor). En éste se ha de simular el funcionami
 
 Utilizando la librería **numpy** para crear una variable aleatoria uniforme (0,1), se siguen las fórmula de generación según TTI para implementar la generación de variables aleatorias normal y exponencial.
 
-```python:
+```python
 #Variable aleatoria Normal
 def gen_VA_normal(_mi, _sigma2):
     _arrayU = [np.random.uniform(0,1) for x in range(12)]
@@ -32,7 +32,7 @@ def gen_VA_exp(_lambda):
 
 Para la simuación del problema, creamos una clase **Simulacion** donde se inicializarán las variables y se desarrollarán los métodos necesarios. Teniendo en cuenta los modelos de Servidores en Serie y Servidores en Paralelo las variables inicializadas quedarían de la siguiente forma:
 
-```python:
+```python
 def __init__(self):
         #Variable de tiempo (tomaremos todos los tiempos del problema en minutos)
 
@@ -89,4 +89,4 @@ Al finalizar la simulación se imprime la cantidad de barcos cargueros que entra
 
 ## Observaciones
 
-Luego de realizar la simulación de este ejercicio se puede comprobar que la cantidad de barcos que entran, salen, así como el tiempo que demoran cada uno de los procesos, dependen en gran medida de las variables aleatorias. Esto hace que sea muy difícil que se repitan simulaciones, probabilidad que sólo disminuye mientras aumente el tiempo total de la simulación (`self.T`). 
+Luego de realizar la simulación de este ejercicio se puede comprobar que la cantidad de barcos que entran, salen, así como el tiempo que demoran cada uno de los procesos, dependen en gran medida de las variables aleatorias. Esto hace que sea muy difícil que se repitan simulaciones, probabilidad que sólo disminuye mientras aumente el tiempo total de la simulación (```self.T```). 
