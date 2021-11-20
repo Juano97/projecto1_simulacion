@@ -1,4 +1,3 @@
-from typing import Match
 import generador_VA_exp as gVAe
 import generador_VA_normal as gVAn
 import numpy as np
@@ -7,14 +6,13 @@ import sys
 class Simulacion:    
     def __init__(self):
         #Variable de tiempo (tomaremos todos los tiempos del problema en minutos)
-        self.T = 28800 #20 dias
+        self.T = 24*60 #1 dia
         self.t = 0
         self.t_arribo = self.t_remolcador = sys.maxsize
         self.t_muelles = [sys.maxsize,sys.maxsize,sys.maxsize] 
+        self.t_entrada_muelle = [0,0,0]
         #Variables Contadoras
-        self.muelles = [True,True,True]
-        # True -> muelle vacio
-        self.cant_arribos = self.cant_ent_carg = self.cant_cargas = self.cant_sal_car= 0
+        self.cant_arribos = self.cant_salidas = self.cola_puerto = self.sum_tiempo_muelle = 0
         #Variables de estado0
         self.remolcador = 0
         # 0 -> esta en el puerto disponible
@@ -23,9 +21,8 @@ class Simulacion:
         # 3 -> se dirige al puerto con tanquero 
         # 4 -> se dirige al puerto sin tanquero 
         # 5 -> se dirige al muelle sin tanquero
-        self.cola_puerto = 0
-
-        
+        self.muelles = [True,True,True]
+        # True -> muelle vacio
         
         
         
@@ -54,13 +51,15 @@ class Simulacion:
 
     def simulacion_evento(self):
         self.t = self.t_arribo = gVAe.gen_VA_exp(8*60).__round__()
-        while(self.t<self.T or self.cant_arribos > self.cant_sal_car):
+        while(self.t<self.T or self.cant_arribos > self.cant_salidas):
             t_min = min(self.t_arribo, self.t_remolcador, min(self.t_muelles))
             self.switch_t(t_min)
             if(t_min == sys.maxsize):
                 break
+        promedio = 0 if not self.cant_arribos else (self.sum_tiempo_muelle/self.cant_arribos).__round__()
         print("Entraron {} cargueros".format(self.cant_arribos))
-        print("Salieron {} cargueros".format(self.cant_sal_car))
+        print("Salieron {} cargueros".format(self.cant_salidas))
+        print("Promedio de tiempo de espera en muelles: {} minutos".format(promedio))
 
 
 
@@ -74,13 +73,13 @@ class Simulacion:
             return
         self.t = self.t_arribo
         self.cant_arribos+=1
-        self.t_arribo = self.t + gVAe.gen_VA_exp(8*60)
+        self.t_arribo = self.t + gVAe.gen_VA_exp(8*60).__round__()
         if(self.muelles.__contains__(True) and self.remolcador == 0):
             self.remolcador = 2
-            self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60)
+            self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60).__round__()
         else:
             self.cola_puerto+=1
-        print("Arribo un barco")
+        print("Arribó un barco a los: {} minutos".format(self.t))
             
         
 
@@ -93,21 +92,25 @@ class Simulacion:
         remolcador = True
         for i in range(3):
             if self.muelles[i] and muelle:
-                self.t_muelles[i] = self.t + self.gen_t_carga()
+                self.t_muelles[i] = self.t + self.gen_t_carga().__round__()
                 self.muelles[i] = False
                 muelle = False
-            elif self.t_muelles==sys.maxsize and remolcador:
+                self.t_entrada_muelle[i]=self.t
+                if remolcador:
+                    if self.cola_puerto and self.muelles.__contains__(True):
+                        self.t_remolcador = self.t + gVAe.gen_VA_exp(15).__round__()
+                        self.remolcador = 4
+                    else:
+                        self.t_remolcador = sys.maxsize
+                        self.remolcador = 1
+            elif self.t_muelles[i]==sys.maxsize and not self.muelles[i] and remolcador:
                 self.muelles[i] = True
-                self.t_remolcador = self.t + gVAe.gen_VA_exp(60)
+                self.t_remolcador = self.t + gVAe.gen_VA_exp(60).__round__()
                 self.remolcador = 3
+                self.sum_tiempo_muelle += (self.t - self.t_entrada_muelle[i])
                 remolcador = False
-        if self.cola_puerto and self.muelles.__contains__(True):
-            self.t_remolcador = self.t + gVAe.gen_VA_exp(15)
-            self.remolcador = 4
-        else:
-            self.t_remolcador = sys.maxsize
-            self.remolcador = 1
-        print("Traslado un carguero al muelle")
+        
+        print("Trasladó un carguero al muelle a los: {} minutos".format(self.t))
 
 
 
@@ -119,49 +122,52 @@ class Simulacion:
                 if self.remolcador == 1:
                     self.muelles[i]=True
                     self.remolcador = 3
-                    self.t_remolcador = self.t + gVAe.gen_VA_exp(60)
-        print("Un muelle termino")
+                    self.sum_tiempo_muelle += (self.t - self.t_entrada_muelle[i])
+                    self.t_remolcador = self.t + gVAe.gen_VA_exp(60).__round__()
+                    break
+        print("Un muelle terminó a los: {} minutos".format(self.t))
 
 
     #trasladó desde el muelle al puerto al carguero, remolcador == 3
     def suc_tras_m_p_tanq(self): #_lambda = 60
         self.t = self.t_remolcador
-        self.cant_sal_car+=1
+        self.cant_salidas+=1
         if self.cola_puerto:
             self.cola_puerto-=1
-            self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60)
+            self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60).__round__()
             self.remolcador = 2
         else:
             if self.muelles.__contains__(False):
                 self.remolcador = 5
-                self.t_remolcador = self.t + gVAe.gen_VA_exp(15)
+                self.t_remolcador = self.t + gVAe.gen_VA_exp(15).__round__()
             else:
                 self.remolcador = 0
                 self.t_remolcador = sys.maxsize
-        print("Traslado del muelle al puerto a un carguero")
+        print("Trasladó al puerto a un carguero a los: {} minutos".format(self.t))
 
     #se trasladó desde el muelle al puerto el remolcador, remolcador == 4
     def suc_tras_m_p_rem(self): #_lambda = 15
         self.t = self.t_remolcador
         self.cola_puerto -= 1
-        self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60)
+        self.t_remolcador = self.t + gVAe.gen_VA_exp(2*60).__round__()
         self.remolcador = 2
-        print("El remolcador fue del muelle al puerto vacio")
+        print("El remolcador fue del muelle al puerto vacío a los: {} minutos".format(self.t))
 
     
     #se trasladó desde el puerto al muelle el remolcador, remolcador == 5 
     def suc_tras_p_m_rem(self): #_lambda=15
         self.t = self.t_remolcador
+        self.t_remolcador = sys.maxsize
+        self.remolcador = 1
         for i in range(3):
             if self.muelles[i] == False and self.t_muelles[i] == sys.maxsize:
                 self.muelles[i]= True
-                self.t_remolcador = self.t + gVAe.gen_VA_exp(60)
+                self.t_remolcador = self.t + gVAe.gen_VA_exp(60).__round__()
                 self.remolcador = 3
-                print("El remolcador fue del puerto al muelle vacio")
-                return
-        self.t_remolcador = sys.maxsize
-        self.remolcador = 1
-        print("El remolcador fue del puerto al muelle vacio")
+                self.sum_tiempo_muelle += (self.t - self.t_entrada_muelle[i])
+                break
+        
+        print("El remolcador fue del puerto al muelle vacío a los: {} minutos".format(self.t))
 
     
     def gen_t_carga(self):
