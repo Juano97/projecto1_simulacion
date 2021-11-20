@@ -59,7 +59,7 @@ def __init__(self):
 
 El método `simulacion_evento` se encarga de correr la simulación, comenzando con generar un primer arribo utilizando una variable aleatoria exponencial con *lambda* = 480 minutos y luego corriendo un *loop* de tipo `while` hasta que se cumplan los parámetros de finalización de la simulación. Para saber el estado de la simulación en que nos encontramos, seleccionamos el mínimo valor entre las variables de tiempo (a excepción de `t_entrada_muelle` que se utiliza para calcular el promedio de tiempo en los muelles de los cargueros) y con ayuda de `switch_t` (método implmentado para simular en **python** los *switch* de lenguajes como **C#** y **JavaScript**) definimos el método a utilizar. En caso que el mínimo tiempo sea `t_remolcador` entonces se utiliza otro *switch* para diferenciar el estado en que se encuentra el remolcador.
 
-```python:
+```python
 #Switch para definir el método a utilizar
 def switch_t(self, value):
         dic_t = {
