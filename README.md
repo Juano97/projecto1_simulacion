@@ -1,6 +1,8 @@
 # Proyecto I de Simulacion 
 Juan Carlos Vázquez García C-412
 
+Link de GitHub: https://github.com/Juano97/projecto1_simulacion
+
 ## Introducción al problema
 
 El ejercicio escogido para implementar en este proyecto fue el ejercicio #2 de los sugeridos,
