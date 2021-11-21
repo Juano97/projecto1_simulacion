@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-def grapher(rep = 500, T = 115200, cant_bars = 5):
+def grapher(rep = 1000, T = 115200, cant_bars = 5):
     v_min = sys.maxsize
     v_max = 0
     values = []

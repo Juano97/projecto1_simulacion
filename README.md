@@ -91,5 +91,15 @@ Al finalizar la simulación se imprime la cantidad de barcos cargueros que entra
 
 Luego de realizar la simulación de este ejercicio se puede comprobar que la cantidad de barcos que entran, salen, así como el tiempo que demoran cada uno de los procesos, dependen en gran medida de las variables aleatorias. Esto hace que sea muy difícil que se repitan simulaciones, probabilidad que sólo disminuye mientras aumente el tiempo total de la simulación (`self.T`). 
 
-![](https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Distribucion4.png?raw=true)
+![](https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Figure_2.png?raw=true)
+
+![](https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Figure_3.png?raw=true)
+
+![](https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Figure_4.png?raw=true)
+
+Como se puede apreciar en las gráficas anteriores, a medida que aumenta `T`, los diferentes valores de promedio de tiempo en los muelles se vuelven menos erráticos y dispersos, aunque siempre se mantienen la mayoría de estos valores en un radio alrededor de 60 minutos.
+
+![](https://github.com/Juano97/projecto1_simulacion/blob/main/Images/Figure_6.png?raw=true)
+
+A medida que aumenta el número de simulaciones, se vuelve más marcado lo planteado anteriormente.
 
