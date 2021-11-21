@@ -26,7 +26,7 @@ def gen_VA_exp(_lambda):
     return X
 ```
 
-Éstas implementaciones se encuentran en la carpeta del proyecto, cada una en un **.py** que la contiene y luego será importado al proyecto.
+Éstas implementaciones se encuentran en la carpeta del proyecto, cada una en un **.py** que la contiene y que luego será importado al proyecto.
 
 ### Simulación:
 
@@ -35,17 +35,16 @@ Para la simuación del problema, creamos una clase **Simulacion** donde se inici
 ```python
 def __init__(self):
         #Variable de tiempo (tomaremos todos los tiempos del problema en minutos)
-
         self.T = 24*60 #1 dia
         self.t = 0
         self.t_arribo = self.t_remolcador = sys.maxsize
         self.t_muelles = [sys.maxsize,sys.maxsize,sys.maxsize] 
         self.t_entrada_muelle = [0,0,0]
+        
         #Variables Contadoras
-
         self.cant_arribos = self.cant_salidas = self.cola_puerto = self.sum_tiempo_muelle = 0
+        
         #Variables de estado
-
         self.remolcador = 0
         # 0 -> está en el puerto disponible
         # 1 -> está en el muelle disponible 
@@ -57,7 +56,7 @@ def __init__(self):
         # True -> muelle vacío
 ```
 
-El método `simulacion_evento` se encarga de correr la simulación, comenzando con generar un primer arribo utilizando una variable aleatoria exponencial con *lambda* = 480 minutos y luego corriendo un *loop* de tipo `while` hasta que se cumplan los parámetros de finalización de la simulación. Para saber el estado de la simulación en que nos encontramos, seleccionamos el mínimo valor entre las variables de tiempo (a excepción de `t_entrada_muelle` que se utiliza para calcular el promedio de tiempo en los muelles de los cargueros) y con ayuda de `switch_t` (método implmentado para simular en **python** los *switch* de lenguajes como **C#** y **JavaScript**) definimos el método a utilizar. En caso que el mínimo tiempo sea `t_remolcador` entonces se utiliza otro *switch* para diferenciar el estado en que se encuentra el remolcador.
+El método `simulacion_evento` se encarga de correr la simulación, que comienza generando un primer arribo utilizando una variable aleatoria exponencial con *lambda* = 480 minutos y luego corriendo un *loop* de tipo `while` hasta que se cumplan los parámetros de finalización de la simulación. Para saber el estado de la simulación en que nos encontramos, seleccionamos el mínimo valor entre las variables de tiempo (a excepción de `t_entrada_muelle` que se utiliza para calcular el promedio de tiempo en los muelles de los cargueros) y con ayuda de `switch_t` (método implmentado para simular en **python** los *switch* de lenguajes como **C#** y **JavaScript**) definimos el método a utilizar. En caso que el mínimo tiempo sea `t_remolcador` entonces se utiliza otro *switch* para diferenciar el estado en que se encuentra el remolcador.
 
 ```python
 #Switch para definir el método a utilizar
@@ -85,7 +84,7 @@ def suc_arribo(self): #_lambda = 8*60
         #print("Arribó un barco a los: {} minutos".format(self.t)) 
 
 ```
-Al finalizar la simulación se imprime la cantidad de barcos cargueros que entraron y salieron del puerto así como el promedio de tiempo de espera en los muelles de éstos.
+Al finalizar la simulación se devuelve el promedio de tiempo de espera en los muelles de los barcos cargueros.
 
 ## Observaciones
 
