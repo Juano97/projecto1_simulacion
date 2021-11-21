@@ -102,3 +102,4 @@ Como se puede apreciar en las gráficas anteriores, a medida que aumenta `T`, lo
 
 A medida que aumenta el número de simulaciones, se vuelve más marcado lo planteado anteriormente.
 
+Todas éstas imágenes fueron generadas en **distribucion.py** utilizando la librería **matplotlib**
